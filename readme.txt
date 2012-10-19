@@ -26,7 +26,7 @@ e.g.
 
 1. Upload `EmailCoAuthorOnPost.php` to the `/wp-content/plugins/EmailCoAuthorOnPost` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Configure the global settings through the settings window.
+3. Configure the global settings through the settings page.
 
 
 == Frequently Asked Questions ==
