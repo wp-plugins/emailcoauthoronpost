@@ -38,7 +38,7 @@ addresses into the field.  Multiple email addresses can be used by placing them 
 seperated list or as seperate custom fields.  If a comma seperated list is used a single
 email will be sent.  If multple custom fields are used one email will be sent per custom field.
 
-= How do I change the subject and body of the message? =
+= How do I change the default subject and body of the message? =
 
 The default subject and message are configured via the settings page.
 
@@ -52,9 +52,20 @@ body of the message can be changed by adding a custom field to the blog post nam
 By adding a custom field to the blog post named "EmailToName" and putting the name of the person 
 being emailed in that field the email which is sent will be personalized.
 
+= Can I personalize emails on a single blog post to multiple email addresses? =
+
+No.  Only the first EmailToName value which the script finds will be used, and it will be used for 
+all the emails which are sent out for that blog post.
+
+= Can I customize the from email address? =
+
+Not at this time.  I've you'd like to see this feature added please <a href="http://mrdenny.com/go/EmailCoAuthorOnPost">let me know</a>.
+
 == Screenshots ==
 
 1. This screenshot shows the setting field in use.
+2. The settings screen with values which have been filled out.
+3. The custom fields overriding the default subject and body.
 
 == Changelog ==
 = 0.1 =
