@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Email CoAuthor On Post
-Version: 0.1
+Version: 0.1.1
 Plugin URI: http://mrdenny.com/go/EmailCoAuthorOnPost
 Description: Emails other people when you publish a blog post
 Author: Denny Cherry
@@ -101,18 +101,20 @@ This email was sent via the \"Email CoAuthor On Post\" WordPress Plugin.  You ca
 
 // Add "Settings" link to the plugins page
 
+function emailcoauthor_pluginmenu ($links, $file) {
+	$options = get_option('emailcoauthor_options');
+	if ($options['emailcoauthor_donate'] == '') {
+		$links[] = '<a href="http://mrdenny.com/go/EmailCoAuthorOnPost">' . __('Donate','') . '</a>';
+	}
+
+	return $links;
+}
+
 function emailcoauthor_action_links( $links, $file ) {
     if ( $file != plugin_basename( __FILE__ ))
         return $links;
 
-    $settings_link = sprintf( '<a href="options-general.php?page=emailcoauthor">%s</a>', __( 'Settings', TEXT_DOMAIN ) );
-
-    $donate_link = sprintf( '<a href="http://mrdenny.com/go/EmailCoAuthorOnPost">%s</a>', __( 'Donate', TEXT_DOMAIN ) );
-
-    $options = get_option('emailcoauthor_options');
-    if ($options['emailcoauthor_donate'] == '') {
-         array_unshift( $links, $donate_link );
-    }
+    $settings_link = sprintf( '<a href="options-general.php?page=emailcoauthor">%s</a>', __( 'Settings', '' ) );
 
     array_unshift( $links, $settings_link );
 
@@ -231,3 +233,4 @@ add_filter('plugin_action_links', 'emailcoauthor_action_links',10,2);
 add_action('admin_init','emailcoauthor_admin_init');
 add_action('plugins_loaded', 'emailcoauthor_activation' );
 register_activation_hook(__FILE__,'emailcoauthor_activation');
+add_filter('plugin_row_meta', 'emailcoauthor_pluginmenu',10,2);

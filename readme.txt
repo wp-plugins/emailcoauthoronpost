@@ -68,6 +68,10 @@ Not at this time.  I've you'd like to see this feature added please <a href="htt
 3. The custom fields overriding the default subject and body.
 
 == Changelog ==
+= 0.1.1 =
+* Moved the donation link on the settings page to a more appropriate location.
+* Updated the FAQ
+
 = 0.1 =
 * Added the settings screen.
 * Added the ability to override the subject and body on a post by post basis.
