@@ -61,6 +61,18 @@ all the emails which are sent out for that blog post.
 
 Not at this time.  I've you'd like to see this feature added please <a href="http://mrdenny.com/go/EmailCoAuthorOnPost">let me know</a>.
 
+= What HTML is supported? =
+
+Just about anything that you want to put into the email and that's supported by email clients can 
+be used.  The plugin doesn't scrub or process the email in any way.  It simply passes the HTML 
+that you supply and adds in the HTML headers to the email so that the email client that the user 
+is using processes the HTML tags.
+
+= The emails aren't showing up in HTML, what should I do? =
+
+First check the Settings page to make sure that the Send as HTML checkbox is checked.  If it is
+check that your email client supports HTML email.
+
 == Screenshots ==
 
 1. This screenshot shows the setting field in use.
@@ -68,9 +80,14 @@ Not at this time.  I've you'd like to see this feature added please <a href="htt
 3. The custom fields overriding the default subject and body.
 
 == Changelog ==
+= 1.0 =
+* Added support for HTML in the email body.
+* Added the ability to email a list of addresses on every post being published.
+* Optimized the PHP code a little.
+
 = 0.1.1 =
 * Moved the donation link on the settings page to a more appropriate location.
-* Updated the FAQ
+* Updated the FAQ.
 
 = 0.1 =
 * Added the settings screen.

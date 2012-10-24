@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Email CoAuthor On Post
-Version: 0.1.1
+Version: 1.0
 Plugin URI: http://mrdenny.com/go/EmailCoAuthorOnPost
 Description: Emails other people when you publish a blog post
 Author: Denny Cherry
@@ -17,7 +17,9 @@ function emailcoauthor_activation() {
         'emailbody' => 'The blog post which we worked on together was just published at $domain.',
 	'advertiseplugin' => '',
 	'includeadmin' => '',
-	'emailcoauthor_donate' => ''
+	'emailcoauthor_donate' => '',
+	'allto' => '',
+	'sendhtml' => ''
     );
     
     // Add options
@@ -35,62 +37,81 @@ function emailcoauthor_activation() {
 	    $email_subject = get_post_custom_values('EmailSubject', $post_id);
 	    $email_body = get_post_custom_values('EmailBody', $post_id);
 
-	    if (empty($friends) && $settings['emailcoauthor_includeadmin'] == '') {
+	    if (empty($friends) && empty($settings['emailcoauthor_includeadmin']) && empty($settings['allto'])) {
 		return;
 	    }
 
 	    // Set the from name
-	    if ($settings['fromname'] <> '') {
+	    if (!empty($settings['fromname'])) {
 		$from = $settings['fromname'];
 		$from = "From: $from <$admin_email>";
 	    } else {
 		$from = "From: \"Site Admin\" <$admin_email>";
 	    }
 
+	    $header[] = $from;
+	    if (!empty($settings['sendhtml'])) {
+		$header[] = 'content-type: text/html';
+	    }
+
 	    // Set the subject
-              if ($email_subject[0] <> '') {
+              if (!empty($email_subject[0])) {
 		$subject = $email_subject[0];
 	    } else {
 		$subject = $settings['emailsubject'];
 	    }
 
 	    // Set the message body
-	    if ($email_body[0] <> '') {
+	    if (!empty($email_body[0])) {
 		$body = $email_body[0];
 	    } else {
 		$body = $settings['emailbody'];
 	    }
 
 	    // Personalize as needed
-             if ($email_to[0] <> '') {
+             if (!empty($email_to[0])) {
+
+		if (!empty($settings['sendhtml'])) {
 		$body = "$email_to[0],
+<br>
 $body";
+		} else {
+			$body = "$email_to[0],
+$body";
+		}
 	   }
 
 	    // Put an add on the email if allowed
-             if ($settings['emailcoauthor_advertiseplugin'] <> '') {
+             if (!empty($settings['emailcoauthor_advertiseplugin'])) {
+		if (!empty($settings['sendhtml'])) {
+			$body = "$body<P>";
+		}
 		$body = "$body
 
 This email was sent via the \"Email CoAuthor On Post\" WordPress Plugin.  You can find out more about this plugin at http://mrdenny.com/go/EmailCoAuthorOnPost.";
 	   }
 
 	    // Send the emails or send an error email to the admin.
-	    if ($subject <> '' || $body <> '') {
+	    if (!empty($subject) || !empty($body)) {
+		if (!empty($settings['allto'])) {
+			wp_mail($settings['allto'], $subject, $body, $header);
+		}
+
 		if (empty($friends)) {
-			wp_mail($admin_email, $subject, $body, $from);
+			wp_mail($admin_email, $subject, $body, $header);
 		}
 		foreach ( $friends as $key => $value ) {
-		    if (isset( $settings['emailcoauthor_includeadmin'] ) && $settings['emailcoauthor_includeadmin'] <> '' ) {
+		    if (isset( $settings['emailcoauthor_includeadmin'] ) && !empty($settings['emailcoauthor_includeadmin'])) {
 			if (empty($value)) {
 				$value = $admin_email;
 			} else {
 				$value = $value.', '.$admin_email;
 			}
 		    }
-		    wp_mail($value, $subject, $body, $from);
+		    wp_mail($value, $subject, $body, $header);
 		}
   	    } else {
-		wp_mail($admin_email, 'Error with EmailCoAuthorOnPost plugin', 'The plugin EmailCoAuthorOnPost on $domain is not configured correctly.  Please check the configuration to resolve this issue.', $from);
+		wp_mail($admin_email, 'Error with EmailCoAuthorOnPost plugin', 'The plugin EmailCoAuthorOnPost on $domain is not configured correctly.  Please check the configuration to resolve this issue.', $header);
 	    }
 	}
 
@@ -103,7 +124,7 @@ This email was sent via the \"Email CoAuthor On Post\" WordPress Plugin.  You ca
 
 function emailcoauthor_pluginmenu ($links, $file) {
 	$options = get_option('emailcoauthor_options');
-	if ($options['emailcoauthor_donate'] == '') {
+	if (empty($options['emailcoauthor_donate'])) {
 		$links[] = '<a href="http://mrdenny.com/go/EmailCoAuthorOnPost">' . __('Donate','') . '</a>';
 	}
 
@@ -150,9 +171,11 @@ The "From Name", "Email Subject" and "Email Body" settings are required.  They m
 function emailcoauthor_admin_init(){
     register_setting( 'emailcoauthor_options', 'emailcoauthor_options', 'emailcoauthor_validate' );
     add_settings_section('emailcoauthor_main', __( 'Settings', '' ), 'emailcoauthor_section', 'emailcoauthor');
-    add_settings_field('fromname', __( 'From Name', '' ), 'emailcoauthor_fromname', 'emailcoauthor', 'emailcoauthor_main');
-    add_settings_field('emailsubject', __( 'Email Subject', '' ), 'emailcoauthor_emailsubject', 'emailcoauthor', 'emailcoauthor_main');
-    add_settings_field('emailbody', __( 'Email Body', '' ), 'emailcoauthor_emailbody', 'emailcoauthor', 'emailcoauthor_main');
+    add_settings_field('fromname', __( 'From Name:', '' ), 'emailcoauthor_fromname', 'emailcoauthor', 'emailcoauthor_main');
+    add_settings_field('allto', __( 'Notifiy On Publishing Of All Posts:', ''), 'emailcoauthor_allto', 'emailcoauthor', 'emailcoauthor_main');
+    add_settings_field('emailsubject', __( 'Email Subject:', '' ), 'emailcoauthor_emailsubject', 'emailcoauthor', 'emailcoauthor_main');
+    add_settings_field('emailbody', __( 'Email Body:', '' ), 'emailcoauthor_emailbody', 'emailcoauthor', 'emailcoauthor_main');
+    add_settings_field('sendhtml', __( '', ''), 'emailsoauthor_sendhtml', 'emailcoauthor', 'emailcoauthor_main');
     add_settings_field('advertiseplugin', __( '', ''), 'emailcoauthor_advertise', 'emailcoauthor', 'emailcoauthor_main');
     add_settings_field('includeadmin', __( '', ''), 'emailcoauthor_includeadmin', 'emailcoauthor', 'emailcoauthor_main');
 
@@ -170,9 +193,15 @@ function emailcoauthor_fromname() {
     echo "<input id='fromname' name='emailcoauthor_options[fromname]' type='text' class='regular-text' value='{$options['fromname']}' />";
 }
 
+
+function emailcoauthor_allto() {
+	$options = get_option('emailcoauthor_options');
+	echo "<input id='allto' name='emailcoauthor_options[allto]' type='text' class='regular-text' value='{$options['allto']}' />";
+}
+
 function emailcoauthor_emailsubject() {
     $options = get_option('emailcoauthor_options');
-    echo "<input id='emailsubject' name=emailcoauthor_options[emailsubject]' type='text' class='regular-text' value='{$options['emailsubject']}' />";
+    echo "<input id='emailsubject' name='emailcoauthor_options[emailsubject]' type='text' class='regular-text' value='{$options['emailsubject']}' />";
 }
 
 function emailcoauthor_emailbody() {
@@ -183,16 +212,26 @@ function emailcoauthor_emailbody() {
 function emailcoauthor_advertise() {
     $options = get_option('emailcoauthor_options');
     echo "<input id='emailcoauthor_advertiseplugin' name='emailcoauthor_options[emailcoauthor_advertiseplugin]' type='checkbox' value='yes'";
-    if ($options['emailcoauthor_advertiseplugin'] <> '') {
+    if (isset($options['emailcoauthor_advertiseplugin'])) {
         echo " checked";
     }
     echo "/> Emails which are sent may include a reference to the plugin.";
 }
 
+function emailsoauthor_sendhtml() {
+    $options = get_option('emailcoauthor_options');
+    echo "<input id='sendhtml' name='emailcoauthor_options[sendhtml]' type='checkbox' value='yes'";
+    if (isset($options['sendhtml'])) {
+	echo " checked";
+    }
+    echo "/> Send Email As HTML";
+}
+
+
 function emailcoauthor_includeadmin() {
     $options = get_option('emailcoauthor_options');
     echo "<input id='emailcoauthor_includeadmin' name='emailcoauthor_options[emailcoauthor_includeadmin]' type='checkbox' value='yes'";
-    if ($options['emailcoauthor_includeadmin'] <> '') {
+    if (isset($options['emailcoauthor_includeadmin'])) {
         echo " checked";
     }
     echo "/> Include the admin account on all emails sent? (Good for testing and verification)";
@@ -200,7 +239,7 @@ function emailcoauthor_includeadmin() {
 
 function emailcoauthor_donate() {
     $options = get_option('emailcoauthor_options');
-    if ($options['emailcoauthor_donate'] == '') {
+    if (empty($options['emailcoauthor_donate'])) {
         echo "<input id='emailcoauthor_donate' name='emailcoauthor_options[emailcoauthor_donate]' type='checkbox' value='yes'/> I have <a href=\"http://mrdenny.com/go/EmailCoAuthorOnPost\">donated</a> to the support of this plugin.";
     } else {
         echo "<input id='emailcoauthor_donate' name='emailcoauthor_options[emailcoauthor_donate]' type='hidden' value='yes'/>";
