@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Email CoAuthor On Post
-Version: 1.0
+Version: 1.1
 Plugin URI: http://mrdenny.com/go/EmailCoAuthorOnPost
 Description: Emails other people when you publish a blog post
 Author: Denny Cherry
@@ -123,6 +123,9 @@ This email was sent via the \"Email CoAuthor On Post\" WordPress Plugin.  You ca
 // Add "Settings" link to the plugins page
 
 function emailcoauthor_pluginmenu ($links, $file) {
+    if ( $file != plugin_basename( __FILE__ ))
+        return $links;
+
 	$options = get_option('emailcoauthor_options');
 	if (empty($options['emailcoauthor_donate'])) {
 		$links[] = '<a href="http://mrdenny.com/go/EmailCoAuthorOnPost">' . __('Donate','') . '</a>';

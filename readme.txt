@@ -80,6 +80,10 @@ check that your email client supports HTML email.
 3. The custom fields overriding the default subject and body.
 
 == Changelog ==
+
+= 1.1 =
+* Fixed the donation link on the settings page.
+
 = 1.0 =
 * Added support for HTML in the email body.
 * Added the ability to email a list of addresses on every post being published.
