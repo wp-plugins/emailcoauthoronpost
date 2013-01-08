@@ -3,7 +3,7 @@ Contributors: mrdenny
 Donate Link: http://mrdenny.com/go/EmailCoAuthorOnPost
 Tags: email
 Requires at least: 3.0.1
-Tested up to: 3.4.2
+Tested up to: 3.5
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -80,6 +80,14 @@ check that your email client supports HTML email.
 3. The custom fields overriding the default subject and body.
 
 == Changelog ==
+
+= 1.5 =
+* Changed all the code to be wrapped within a class to minimize object name problems and to shorten function names.
+* Added a banner message on the admin pages about the settings needing to be set after initial installation.
+* Plugin only sends an email when the status is changed.  This fixes the problem of sending an email every time an already published post is updated.
+* Added a security check on the settings page to prevent manual navigation to the settings page.
+* Removed the settings link from the Installed Plugins page if the user doesn't have the right to edit the settings.
+
 
 = 1.1 =
 * Fixed the donation link on the settings page.
