@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Email CoAuthor On Post
-Version: 1.5
+Version: 1.5.1
 Plugin URI: http://mrdenny.com/go/EmailCoAuthorOnPost
 Description: Emails other people when you publish a blog post
 Author: Denny Cherry
@@ -239,7 +239,7 @@ class emailcoauthor_class {
 
 	function emailbody() {
 		$options = get_option('emailcoauthor_options');
-		echo "<textarea id='emailbody' name='emailcoauthor_options[emailbody]' rows='5' cols='60'/>{$options['emailbody']}</textarea>";
+		echo "<textarea id='emailbody' name='emailcoauthor_options[emailbody]' rows='10' cols='120'/>{$options['emailbody']}</textarea>";
 	}
 
 	function advertise() {

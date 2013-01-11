@@ -81,6 +81,9 @@ check that your email client supports HTML email.
 
 == Changelog ==
 
+= 1.5.1 =
+* Made the text box for the message body larger.
+
 = 1.5 =
 * Changed all the code to be wrapped within a class to minimize object name problems and to shorten function names.
 * Added a banner message on the admin pages about the settings needing to be set after initial installation.
