@@ -3,7 +3,7 @@ Contributors: mrdenny
 Donate Link: http://mrdenny.com/go/EmailCoAuthorOnPost
 Tags: email
 Requires at least: 3.0.1
-Tested up to: 3.5
+Tested up to: 3.5.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -80,6 +80,9 @@ check that your email client supports HTML email.
 3. The custom fields overriding the default subject and body.
 
 == Changelog ==
+
+= 1.5.2 =
+* Tested for Wordpress 1.5.1
 
 = 1.5.1 =
 * Made the text box for the message body larger.
