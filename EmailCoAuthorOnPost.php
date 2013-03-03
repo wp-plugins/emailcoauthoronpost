@@ -34,7 +34,9 @@ class emailcoauthor_class {
 		$options = get_option('emailcoauthor_options');
 
 		if ($options['fromname'] == 'Site Admin' && $options['emailsubject'] == 'Sample Subject.') {
-			echo '<div if="message" class="error"><p>This plugin "Email GoAuthor On Post" needs to be <a href="options-general.php?page=emailcoauthor">configured</a> before it can be used.  Please correct the configuration before having the plugin sending emails.</div>';
+			echo '<div if="message" class="error"><p>This plugin "Email GoAuthor On Post" needs to be <a href="options-general.php?
+
+page=emailcoauthor">configured</a> before it can be used.  Please correct the configuration before having the plugin sending emails.</div>';
 		} 
 	}
 
@@ -112,8 +114,19 @@ class emailcoauthor_class {
 			}
 			$body = "$body
 
-	This email was sent via the \"Email CoAuthor On Post\" WordPress Plugin.  You can find out more about this plugin at http://mrdenny.com/go/EmailCoAuthorOnPost.";
+	This email was sent via the \"Email CoAuthor On Post\" WordPress Plugin.  You can find out more about this plugin at 
+
+http://mrdenny.com/go/EmailCoAuthorOnPost.";
 		   }
+
+		 //Swap out variables.
+		$subject = str_replace('$domain', get_site_url(), $body);
+		$subject = str_replace('$post_url', get_permalink(), $body);
+		$subject = str_replace('$title', get_the_title(), $body);
+
+		$body = str_replace('$domain', get_site_url(), $body);
+		$body = str_replace('$post_url', get_permalink(), $body);
+		$body = str_replace('$title', get_the_title(), $body);
 
 			// Send the emails or send an error email to the admin.
 			if (!empty($subject) || !empty($body)) {
@@ -135,7 +148,9 @@ class emailcoauthor_class {
 				wp_mail($value, $subject, $body, $header);
 			}
   			} else {
-			wp_mail($admin_email, 'Error with EmailCoAuthorOnPost plugin', 'The plugin EmailCoAuthorOnPost on $domain is not configured correctly.  Please check the configuration to resolve this issue.', $header);
+			wp_mail($admin_email, 'Error with EmailCoAuthorOnPost plugin', 'The plugin EmailCoAuthorOnPost on $domain is not 
+
+configured correctly.  Please check the configuration to resolve this issue.', $header);
 			}
 		}
 
@@ -185,10 +200,14 @@ class emailcoauthor_class {
 				<?php settings_fields('emailcoauthor_options'); ?>
 				<?php do_settings_sections('emailcoauthor'); ?>
 				<p class="submit">
-					<input name="submit" type="submit" class="button-primary" value="<?php _e('Save Changes', TEXT_DOMAIN ); ?>" />
+					<input name="submit" type="submit" class="button-primary" value="<?php _e('Save Changes', 
+
+TEXT_DOMAIN ); ?>" />
 				</p>
 			</form>
-	The "From Name", "Email Subject" and "Email Body" settings are required.  They must be filled out for the plugin to work correctly.  Even if you plan on using different values for the subject and body in every blog post, these values must be filled in with default values.
+	The "From Name", "Email Subject" and "Email Body" settings are required.  They must be filled out for the plugin to work correctly.  Even if you plan 
+
+on using different values for the subject and body in every blog post, these values must be filled in with default values.
 		</div>
 		<?php
 	}
@@ -234,7 +253,9 @@ class emailcoauthor_class {
 
 	function emailsubject() {
 		$options = get_option('emailcoauthor_options');
-		echo "<input id='emailsubject' name='emailcoauthor_options[emailsubject]' type='text' class='regular-text' value='{$options['emailsubject']}' />";
+		echo "<input id='emailsubject' name='emailcoauthor_options[emailsubject]' type='text' class='regular-text' value='{$options
+
+['emailsubject']}' />";
 	}
 
 	function emailbody() {
@@ -244,7 +265,9 @@ class emailcoauthor_class {
 
 	function advertise() {
 		$options = get_option('emailcoauthor_options');
-		echo "<input id='emailcoauthor_advertiseplugin' name='emailcoauthor_options[emailcoauthor_advertiseplugin]' type='checkbox' value='yes'";
+		echo "<input id='emailcoauthor_advertiseplugin' name='emailcoauthor_options[emailcoauthor_advertiseplugin]' type='checkbox' 
+
+value='yes'";
 		if (isset($options['emailcoauthor_advertiseplugin'])) {
 			echo " checked";
 		}
@@ -263,7 +286,9 @@ class emailcoauthor_class {
 
 	function includeadmin() {
 		$options = get_option('emailcoauthor_options');
-		echo "<input id='emailcoauthor_includeadmin' name='emailcoauthor_options[emailcoauthor_includeadmin]' type='checkbox' value='yes'";
+		echo "<input id='emailcoauthor_includeadmin' name='emailcoauthor_options[emailcoauthor_includeadmin]' type='checkbox' 
+
+value='yes'";
 		if (isset($options['emailcoauthor_includeadmin'])) {
 			echo " checked";
 		}
@@ -273,7 +298,9 @@ class emailcoauthor_class {
 	function donate() {
 		$options = get_option('emailcoauthor_options');
 		if (empty($options['emailcoauthor_donate'])) {
-			echo "<input id='emailcoauthor_donate' name='emailcoauthor_options[emailcoauthor_donate]' type='checkbox' value='yes'/> I have <a href=\"http://mrdenny.com/go/EmailCoAuthorOnPost\">donated</a> to the support of this plugin.";
+			echo "<input id='emailcoauthor_donate' name='emailcoauthor_options[emailcoauthor_donate]' type='checkbox' value='yes'/> I 
+
+have <a href=\"http://mrdenny.com/go/EmailCoAuthorOnPost\">donated</a> to the support of this plugin.";
 		} else {
 			echo "<input id='emailcoauthor_donate' name='emailcoauthor_options[emailcoauthor_donate]' type='hidden' value='yes'/>";
 		}

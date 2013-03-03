@@ -79,7 +79,16 @@ check that your email client supports HTML email.
 2. The settings screen with values which have been filled out.
 3. The custom fields overriding the default subject and body.
 
+== Supported Variables ==
+
+* $domain - Replaced with the URL of the website
+* $post_url - Replaced with the URL of the post which was published
+* $title - Replaced with the title of the post which was published
+
 == Changelog ==
+
+= 1.6 =
+* Added support for variables within the subject and body of the message.  Supported variables are $domain, $post_url and $title.  When processed the emails will be sent with the values of these variables replaced with the URL or the site, the URL of the post and the title of the post respectively.
 
 = 1.5.2 =
 * Tested for Wordpress 1.5.1
