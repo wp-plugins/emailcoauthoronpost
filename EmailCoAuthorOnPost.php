@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Email CoAuthor On Post
-Version: 1.5.2
+Version: 2.0
 Plugin URI: http://mrdenny.com/go/EmailCoAuthorOnPost
 Description: Emails other people when you publish a blog post
 Author: Denny Cherry
@@ -120,9 +120,9 @@ http://mrdenny.com/go/EmailCoAuthorOnPost.";
 		   }
 
 		 //Swap out variables.
-		$subject = str_replace('$domain', get_site_url(), $body);
-		$subject = str_replace('$post_url', get_permalink(), $body);
-		$subject = str_replace('$title', get_the_title(), $body);
+		$subject = str_replace('$domain', get_site_url(), $subject);
+		$subject = str_replace('$post_url', get_permalink(), $subject);
+		$subject = str_replace('$title', get_the_title(), $subject);
 
 		$body = str_replace('$domain', get_site_url(), $body);
 		$body = str_replace('$post_url', get_permalink(), $body);
@@ -324,6 +324,85 @@ have <a href=\"http://mrdenny.com/go/EmailCoAuthorOnPost\">donated</a> to the su
 
 		return $input;
 	}
+
+	function meta_box () {
+		$emailcoauthor_c = new emailcoauthor_class();
+		add_meta_box ('email-coauthor-on-post', esc_html__('Email CoAuthor On Post', 'Email CoAuthor On Post'), array($emailcoauthor_c, 'meta_box_draw'), 'post', 'side', 'default');
+
+	}
+
+	function meta_box_draw ($object, $box) {
+		$EmailToName = get_post_custom_values('EmailToName', $post_id);
+		$EmailTo = get_post_custom_values('EmailTo', $post_id);
+		$EmailSubject = get_post_custom_values('EmailSubject', $post_id);
+		$EmailBody = get_post_custom_values('EmailBody', $post_id);
+
+		echo "<table>";
+		echo "<tr><td>Name of person to email:</td><td>";
+			if (count($EmailToName) == 0 || 1) {
+				echo "<input class='widefat' type='text' name='EmailToName' value='";
+				echo $EmailToName[0];
+				echo "'>";
+			} else {
+				echo "<input class='widefat' type='text' name='EmailToName' value='Disabled: Edit via Custom Fields' disabled>";
+				echo "<input type='hidden' name='EmailToName_Disabled' value='true' />";
+			}
+		echo "</td></tr>";
+		echo "<tr><td>Email address of person to email:</td><td>";
+			if (count($EmailTo) == 0 || 1) {
+				echo "<input class='widefat' type='text' name='EmailTo' value='";
+				echo $EmailTo[0];
+				echo "'>";
+			} else {
+				echo "<input class='widefat' type='text' name='EmailTo' value='Disabled: Edit via Custom Fields' disabled>";
+				echo "<input type='hidden' name='EmailTo_Disabled' value='true' />";
+			}
+		echo "</td></tr>";
+		echo "<tr><td>Custom Subject:</td><td><input class='widefat' type='text' name='EmailSubject' value='";
+			echo $EmailSubject[0];
+		echo "'></td></tr>";
+		ECHO "<tr><td>Custom Body:</td><td><textarea id='emailbody' name='EmailBody' rows='10' cols='30'/>";
+			ECHO $EmailBody[0];
+		ECHO "</textarea>";
+		echo "</table>";
+	}
+
+	function meta_box_save($post_id, $post) {
+		if ($_POST['EmailTo_Disabled'] == "") {
+			//Save the EmailTo Field
+			if ($_POST['EmailTo']) {
+				update_post_meta($post_id, 'EmailTo', $_POST['EmailTo']);
+			} else {
+				delete_post_meta ($post_id, 'EmailTo');
+			}
+		}
+		if ($_POST['EmailToName_Disabled'] == "") {
+			//Save the EmailToName Field
+			if ($_POST['EmailToName']) {
+				update_post_meta($post_id, 'EmailToName', $_POST['EmailToName']);
+			} else {
+				delete_post_meta ($post_id, 'EmailToName');
+			}
+		}
+		if ($_POST['EmailSubject']) {
+			update_post_meta($post_id, 'EmailSubject', $_POST['EmailSubject']);
+		} else {
+			delete_post_meta ($post_id, 'EmailSubject');
+		}
+		if ($_POST['EmailBody']) {
+			update_post_meta($post_id, 'EmailBody', $_POST['EmailBody']);
+		} else {
+			delete_post_meta ($post_id, 'EmailBody');
+		}
+	}
+
+	function meta_box_setup() {
+		$emailcoauthor_c = new emailcoauthor_class();
+		add_action('add_meta_boxes', array($emailcoauthor_c, 'meta_box'));
+
+		add_action( 'save_post', array($emailcoauthor_c, 'meta_box_save'), 10, 2 );
+
+	}
 } //End Class
 
 $emailcoauthor_c = new emailcoauthor_class();
@@ -336,3 +415,5 @@ add_action('admin_init', array($emailcoauthor_c, 'admin_init'), 1);
 register_activation_hook(__FILE__, array($emailcoauthor_c, 'activation'));
 add_filter('plugin_row_meta', array($emailcoauthor_c, 'pluginmenu'),10,2);
 add_action('admin_head', array($emailcoauthor_c, 'post_install_message')); 
+add_action( 'load-post.php', array($emailcoauthor_c, 'meta_box_setup' ));
+add_action( 'load-post-new.php', array($emailcoauthor_c, 'meta_box_setup' ));

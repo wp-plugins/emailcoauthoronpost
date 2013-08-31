@@ -33,10 +33,15 @@ e.g.
 
 = How do I change the set the email address to email? =
 
-By adding a custom field to the blog post called "EmailTo", then putting the email address or 
-addresses into the field.  Multiple email addresses can be used by placing them into a comma 
-seperated list or as seperate custom fields.  If a comma seperated list is used a single
-email will be sent.  If multple custom fields are used one email will be sent per custom field.
+Fill out the "Email CoAuthor On Post" widget within the New Post editor.  Using the plugin only 
+requires that the Name and email addresses are filled out.  Customizing the subject and body
+on a per post basis is optional.
+
+= Can multiple email addresses be emailed at once? =
+
+Yes.  There are two options for doing this.  The first option is to use the "Email CoAuthor On Post" widget on
+the new post editor and simply put a comma between each email address.  The second option is to add one "EmailTo" 
+custom fields each one with a different email address.
 
 = How do I change the default subject and body of the message? =
 
@@ -44,13 +49,7 @@ The default subject and message are configured via the settings page.
 
 = How do I change the subject and body for one blog post? =
 
-The subject can be changed by adding a custom field to the blog post named "EmailSubject".  The
-body of the message can be changed by adding a custom field to the blog post named "EmailBody".
-
-= How do I personalize the email being sent out? =
-
-By adding a custom field to the blog post named "EmailToName" and putting the name of the person 
-being emailed in that field the email which is sent will be personalized.
+Fill out the "Email CoAuthor On Post" widget within the New Post editor.
 
 = Can I personalize emails on a single blog post to multiple email addresses? =
 
@@ -78,6 +77,7 @@ check that your email client supports HTML email.
 1. This screenshot shows the setting field in use.
 2. The settings screen with values which have been filled out.
 3. The custom fields overriding the default subject and body.
+4. "Email CoAuthor On Post" widget on the new post editor.
 
 == Supported Variables ==
 
@@ -86,6 +86,9 @@ check that your email client supports HTML email.
 * $title - Replaced with the title of the post which was published
 
 == Changelog ==
+
+= 2.0 =
+* Added the widget on the new post and new page editors.
 
 = 1.6 =
 * Added support for variables within the subject and body of the message.  Supported variables are $domain, $post_url and $title.  When processed the emails will be sent with the values of these variables replaced with the URL or the site, the URL of the post and the title of the post respectively.
