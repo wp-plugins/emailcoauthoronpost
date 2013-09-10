@@ -87,6 +87,9 @@ check that your email client supports HTML email.
 
 == Changelog ==
 
+= 2.1 =
+* Bug fixes related to sending emails to admins.
+
 = 2.0 =
 * Added the widget on the new post and new page editors.
 

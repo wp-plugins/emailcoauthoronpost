@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Email CoAuthor On Post
-Version: 2.0
+Version: 2.1
 Plugin URI: http://mrdenny.com/go/EmailCoAuthorOnPost
 Description: Emails other people when you publish a blog post
 Author: Denny Cherry
@@ -128,27 +128,29 @@ http://mrdenny.com/go/EmailCoAuthorOnPost.";
 		$body = str_replace('$post_url', get_permalink(), $body);
 		$body = str_replace('$title', get_the_title(), $body);
 
-			// Send the emails or send an error email to the admin.
-			if (!empty($subject) || !empty($body)) {
+		// Send the emails or send an error email to the admin.
+		if (!empty($subject) || !empty($body)) {
 			if (!empty($settings['allto'])) {
-				wp_mail($settings['allto'], $subject, $body, $header);
+				$allto = $settings['allto'];
+				wp_mail($allto, $subject, $body, $header);
 			}
+			//Haven't decided if I like this or not. Maybe make this an option later.
+			//if (empty($friends)) {
+			//	wp_mail($admin_email, $subject, $body, $header);
+			//}
 
-			if (empty($friends)) {
-				wp_mail($admin_email, $subject, $body, $header);
-			}
 			foreach ( $friends as $key => $value ) {
-				if (isset( $settings['emailcoauthor_includeadmin'] ) && !empty($settings['emailcoauthor_includeadmin'])) {
-				if (empty($value)) {
-					$value = $admin_email;
-				} else {
-					$value = $value.', '.$admin_email;
-				}
+				if (isset($settings['emailcoauthor_includeadmin'] )) {
+					if (empty($value)) {
+						$value = $admin_email.', test2@mrdenny.com';
+					} else {
+						$value = $value.', '.$admin_email;
+					}
 				}
 				wp_mail($value, $subject, $body, $header);
 			}
-  			} else {
-			wp_mail($admin_email, 'Error with EmailCoAuthorOnPost plugin', 'The plugin EmailCoAuthorOnPost on $domain is not 
+ 			} else {
+				wp_mail($admin_email, 'Error with EmailCoAuthorOnPost plugin', 'The plugin EmailCoAuthorOnPost on $domain is not 
 
 configured correctly.  Please check the configuration to resolve this issue.', $header);
 			}
