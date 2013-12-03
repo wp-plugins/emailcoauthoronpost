@@ -3,7 +3,7 @@ Contributors: mrdenny
 Donate Link: http://mrdenny.com/go/EmailCoAuthorOnPost
 Tags: email
 Requires at least: 3.0.1
-Tested up to: 3.5.1
+Tested up to: 3.7.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -86,6 +86,9 @@ check that your email client supports HTML email.
 * $title - Replaced with the title of the post which was published
 
 == Changelog ==
+
+= 2.2 =
+* Added support for emailing someone when a page is published.
 
 = 2.1 =
 * Bug fixes related to sending emails to admins.

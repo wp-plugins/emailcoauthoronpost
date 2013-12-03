@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Email CoAuthor On Post
-Version: 2.1
+Version: 2.2
 Plugin URI: http://mrdenny.com/go/EmailCoAuthorOnPost
 Description: Emails other people when you publish a blog post
 Author: Denny Cherry
@@ -330,6 +330,7 @@ have <a href=\"http://mrdenny.com/go/EmailCoAuthorOnPost\">donated</a> to the su
 	function meta_box () {
 		$emailcoauthor_c = new emailcoauthor_class();
 		add_meta_box ('email-coauthor-on-post', esc_html__('Email CoAuthor On Post', 'Email CoAuthor On Post'), array($emailcoauthor_c, 'meta_box_draw'), 'post', 'side', 'default');
+		add_meta_box ('email-coauthor-on-post', esc_html__('Email CoAuthor On Post', 'Email CoAuthor On Post'), array($emailcoauthor_c, 'meta_box_draw'), 'page', 'side', 'default');
 
 	}
 
