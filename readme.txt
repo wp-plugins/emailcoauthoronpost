@@ -1,9 +1,9 @@
 === Email CoAuthor On Post ===
 Contributors: mrdenny
-Donate Link: http://mrdenny.com/go/EmailCoAuthorOnPost
+Donate Link: http://dcac.co/go/EmailCoAuthorOnPost
 Tags: email
 Requires at least: 3.0.1
-Tested up to: 3.7.1
+Tested up to: 3.8.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -87,6 +87,9 @@ check that your email client supports HTML email.
 
 == Changelog ==
 
+= 2.2.1 =
+* Fixed the support and donate URLs.
+
 = 2.2 =
 * Added support for emailing someone when a page is published.
 
@@ -135,5 +138,3 @@ check that your email client supports HTML email.
 * Birth of the plugin.
 
 == Upgrade Notice ==
-
-

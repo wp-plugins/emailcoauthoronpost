@@ -2,10 +2,10 @@
 /*
 Plugin Name: Email CoAuthor On Post
 Version: 2.2
-Plugin URI: http://mrdenny.com/go/EmailCoAuthorOnPost
+Plugin URI: http://dcac.co/go/EmailCoAuthorOnPost
 Description: Emails other people when you publish a blog post
 Author: Denny Cherry
-Author URI: http://mrdenny.com/
+Author URI: http://dcac.co/
 */
 
 class emailcoauthor_class {
@@ -116,7 +116,7 @@ page=emailcoauthor">configured</a> before it can be used.  Please correct the co
 
 	This email was sent via the \"Email CoAuthor On Post\" WordPress Plugin.  You can find out more about this plugin at 
 
-http://mrdenny.com/go/EmailCoAuthorOnPost.";
+http://dcac.co/go/EmailCoAuthorOnPost.";
 		   }
 
 		 //Swap out variables.
@@ -169,7 +169,7 @@ configured correctly.  Please check the configuration to resolve this issue.', $
 
 		$options = get_option('emailcoauthor_options');
 		if (empty($options['emailcoauthor_donate'])) {
-			$links[] = '<a href="http://mrdenny.com/go/EmailCoAuthorOnPost">' . __('Donate','') . '</a>';
+			$links[] = '<a href="http://dcac.co/go/EmailCoAuthorOnPost">' . __('Donate','') . '</a>';
 		}
 
 		return $links;
@@ -302,7 +302,7 @@ value='yes'";
 		if (empty($options['emailcoauthor_donate'])) {
 			echo "<input id='emailcoauthor_donate' name='emailcoauthor_options[emailcoauthor_donate]' type='checkbox' value='yes'/> I 
 
-have <a href=\"http://mrdenny.com/go/EmailCoAuthorOnPost\">donated</a> to the support of this plugin.";
+have <a href=\"http://dcac.co/go/EmailCoAuthorOnPost\">donated</a> to the support of this plugin.";
 		} else {
 			echo "<input id='emailcoauthor_donate' name='emailcoauthor_options[emailcoauthor_donate]' type='hidden' value='yes'/>";
 		}
