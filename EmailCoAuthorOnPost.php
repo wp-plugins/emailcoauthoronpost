@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Email CoAuthor On Post
-Version: 2.2.1
+Version: 2.2.2
 Plugin URI: http://dcac.co/go/EmailCoAuthorOnPost
 Description: Emails other people when you publish a blog post
 Author: Denny Cherry
@@ -194,6 +194,10 @@ configured correctly.  Please check the configuration to resolve this issue.', $
 
 	// Display options page
 	function options_page() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( __('You are not allowed to access this part of the site') );
+		}
+
 		?>
 		<div class="wrap">
 		<h2><?php _e('Email Settings', TEXT_DOMAIN ); ?></h2>
@@ -217,11 +221,6 @@ on using different values for the subject and body in every blog post, these val
 
 	// Register settings, add sections and fields
 	function admin_init(){
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __('You are not allowed to access this part of the site') );
-		}
-
 
 		register_setting( 'emailcoauthor_options', 'emailcoauthor_options', array(&$this,'validate') );
 		add_settings_section('emailcoauthor_main', __( 'Settings', '' ), array(&$this, 'section'), 'emailcoauthor');

@@ -87,6 +87,10 @@ check that your email client supports HTML email.
 
 == Changelog ==
 
+= 2.2.2 =
+* Fixed bug where people without the manage_options right could not log into the admin screen at all.
+
+
 = 2.2.1 =
 * Fixed the support and donate URLs.
 
