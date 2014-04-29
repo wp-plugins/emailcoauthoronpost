@@ -87,6 +87,10 @@ check that your email client supports HTML email.
 
 == Changelog ==
 
+= 2.3 =
+* Addes option to have default subject and body shown for each post and page.
+* Fixed Undefined variable errors from post/page meta-box.
+
 = 2.2.2 =
 * Fixed bug where people without the manage_options right could not log into the admin screen at all.
 

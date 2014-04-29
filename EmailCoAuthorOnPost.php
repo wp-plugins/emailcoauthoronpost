@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Email CoAuthor On Post
-Version: 2.2.2
+Version: 2.3
 Plugin URI: http://dcac.co/go/EmailCoAuthorOnPost
 Description: Emails other people when you publish a blog post
 Author: Denny Cherry
@@ -21,7 +21,8 @@ class emailcoauthor_class {
 		'includeadmin' => '',
 		'emailcoauthor_donate' => '',
 		'allto' => '',
-		'sendhtml' => ''
+		'sendhtml' => '',
+		'showdefaults' => ''
 		);
     
 		// Add options
@@ -231,6 +232,7 @@ on using different values for the subject and body in every blog post, these val
 		add_settings_field('sendhtml', __( '', ''), array(&$this, 'sendhtml'), 'emailcoauthor', 'emailcoauthor_main');
 		add_settings_field('advertiseplugin', __( '', ''), array(&$this, 'advertise'), 'emailcoauthor', 'emailcoauthor_main');
 		add_settings_field('includeadmin', __( '', ''), array(&$this, 'includeadmin'), 'emailcoauthor', 'emailcoauthor_main');
+		add_settings_field('showdefaults', __( '', ''), array(&$this, 'showdefaults'), 'emailcoauthor', 'emailcoauthor_main');
 
 
 	// This setting should always be last. Don't move it up.
@@ -284,6 +286,14 @@ value='yes'";
 		echo "/> Send Email As HTML";
 	}
 
+	function showdefaults() {
+		$options = get_option('emailcoauthor_options');
+		echo "<input id='showdefaults' name='emailcoauthor_options[showdefaults]' type='checkbox' value='true'";
+		if (isset($options['showdefaults'])) {
+			echo " checked";
+		}
+		echo "/> Show Defaults On Each Page and Post";
+	}
 
 	function includeadmin() {
 		$options = get_option('emailcoauthor_options');
@@ -333,38 +343,54 @@ have <a href=\"http://dcac.co/go/EmailCoAuthorOnPost\">donated</a> to the suppor
 
 	}
 
-	function meta_box_draw ($object, $box) {
+	function meta_box_draw ($post) {
+		$post_id = get_post_meta( $post->ID, '_my_meta_value_key', true );
+
 		$EmailToName = get_post_custom_values('EmailToName', $post_id);
 		$EmailTo = get_post_custom_values('EmailTo', $post_id);
 		$EmailSubject = get_post_custom_values('EmailSubject', $post_id);
 		$EmailBody = get_post_custom_values('EmailBody', $post_id);
 
+		$options =  get_option('emailcoauthor_options');
+
 		echo "<table>";
-		echo "<tr><td>Name of person to email:</td><td>";
+		echo "<tr><td>Name of person to email:</td></tr><tr><td>";
 			if (count($EmailToName) == 0 || 1) {
-				echo "<input class='widefat' type='text' name='EmailToName' value='";
+				echo "<input type='text' name='EmailToName' value='";
 				echo $EmailToName[0];
 				echo "'>";
 			} else {
-				echo "<input class='widefat' type='text' name='EmailToName' value='Disabled: Edit via Custom Fields' disabled>";
+				echo "<input type='text' name='EmailToName' value='Disabled: Edit via Custom Fields' disabled>";
 				echo "<input type='hidden' name='EmailToName_Disabled' value='true' />";
 			}
 		echo "</td></tr>";
-		echo "<tr><td>Email address of person to email:</td><td>";
+		echo "<tr><td>Email address of person to email:</td></tr><tr><td>";
 			if (count($EmailTo) == 0 || 1) {
-				echo "<input class='widefat' type='text' name='EmailTo' value='";
+				echo "<input type='text' name='EmailTo' value='";
 				echo $EmailTo[0];
 				echo "'>";
 			} else {
-				echo "<input class='widefat' type='text' name='EmailTo' value='Disabled: Edit via Custom Fields' disabled>";
+				echo "<input type='text' name='EmailTo' value='Disabled: Edit via Custom Fields' disabled>";
 				echo "<input type='hidden' name='EmailTo_Disabled' value='true' />";
 			}
 		echo "</td></tr>";
-		echo "<tr><td>Custom Subject:</td><td><input class='widefat' type='text' name='EmailSubject' value='";
-			echo $EmailSubject[0];
+		echo "<tr><td>Custom Subject:</td></tr><tr><td><input type='text' name='EmailSubject' value='";
+			if ($EmailSubject[0]<>'') {
+				echo $EmailSubject[0];
+			} else {
+				if (isset($options['showdefaults'])) {
+					echo $options['emailsubject'];
+				}
+			}
 		echo "'></td></tr>";
-		ECHO "<tr><td>Custom Body:</td><td><textarea id='emailbody' name='EmailBody' rows='10' cols='30'/>";
-			ECHO $EmailBody[0];
+		ECHO "<tr><td>Custom Body:</td></tr><tr><td><textarea id='emailbody' name='EmailBody' rows='10' />";
+			if ($EmailBody[0]<>'') {
+				ECHO $EmailBody[0];
+			} else {
+				if (isset($options['showdefaults'])) {
+					echo $options['emailbody'];
+				}
+			}
 		ECHO "</textarea>";
 		echo "</table>";
 	}
@@ -386,13 +412,27 @@ have <a href=\"http://dcac.co/go/EmailCoAuthorOnPost\">donated</a> to the suppor
 				delete_post_meta ($post_id, 'EmailToName');
 			}
 		}
-		if ($_POST['EmailSubject']) {
-			update_post_meta($post_id, 'EmailSubject', $_POST['EmailSubject']);
+
+		$post_EmailSubject = $_POST['EmailSubject'];
+		$post_EmailBody = $_POST['EmailBody'];
+
+		$options =  get_option('emailcoauthor_options');
+
+		if ($post_EmailSubject==$options['emailsubject']) {
+			$post_EmailSubject='';
+		}
+		if ($post_EmailBody == $options['emailbody']) {
+			$post_EmailBody='';
+		}
+
+
+		if ($post_EmailSubject) {
+			update_post_meta($post_id, 'EmailSubject', $post_EmailSubject);
 		} else {
 			delete_post_meta ($post_id, 'EmailSubject');
 		}
-		if ($_POST['EmailBody']) {
-			update_post_meta($post_id, 'EmailBody', $_POST['EmailBody']);
+		if ($post_EmailBody) {
+			update_post_meta($post_id, 'EmailBody', $post_EmailBody);
 		} else {
 			delete_post_meta ($post_id, 'EmailBody');
 		}
