@@ -3,7 +3,7 @@ Contributors: mrdenny
 Donate Link: http://dcac.co/go/EmailCoAuthorOnPost
 Tags: email
 Requires at least: 3.0.1
-Tested up to: 3.9
+Tested up to: 4.0
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -86,6 +86,9 @@ check that your email client supports HTML email.
 * $title - Replaced with the title of the post which was published
 
 == Changelog ==
+
+= 2.3.1 =
+* Tested for version 4.1
 
 = 2.3 =
 * Addes option to have default subject and body shown for each post and page.
