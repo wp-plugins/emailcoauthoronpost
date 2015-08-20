@@ -3,7 +3,7 @@ Contributors: mrdenny
 Donate Link: http://dcac.co/go/EmailCoAuthorOnPost
 Tags: email
 Requires at least: 3.0.1
-Tested up to: 4.1
+Tested up to: 4.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -86,6 +86,10 @@ check that your email client supports HTML email.
 * $title - Replaced with the title of the post which was published
 
 == Changelog ==
+
+= 2.4 =
+* Tested for version 4.3
+* Fixed bug where an error was thrown when publishing without saving a draft.  (Thanks dpknauss for reporting.)
 
 = 2.3.1 =
 * Tested for version 4.1

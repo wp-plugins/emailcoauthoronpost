@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Email CoAuthor On Post
-Version: 2.3.1
+Version: 2.4
 Plugin URI: http://dcac.co/go/EmailCoAuthorOnPost
 Description: Emails other people when you publish a blog post
 Author: Denny Cherry
@@ -35,92 +35,101 @@ class emailcoauthor_class {
 		$options = get_option('emailcoauthor_options');
 
 		if ($options['fromname'] == 'Site Admin' && $options['emailsubject'] == 'Sample Subject.') {
-			echo '<div if="message" class="error"><p>This plugin "Email GoAuthor On Post" needs to be <a href="options-general.php?
-
-page=emailcoauthor">configured</a> before it can be used.  Please correct the configuration before having the plugin sending emails.</div>';
+			echo '<div if="message" class="error"><p>This plugin "Email GoAuthor On Post" needs to be <a href="options-general.php?page=emailcoauthor">configured</a> before it can be used.  Please correct the configuration before having the plugin sending emails.</div>';
 		} 
 	}
 
-		function EmailCoAuthor($new_status, $old_status, $post)  {
-			if ($old_status=='publish') { //It's already published so do nothing.
-			//echo "<div if='message' class='warning'><p>No email sent as this was being republished.</p></div>";
+	function EmailCoAuthor($new_status, $old_status, $post)  {
+		if ($old_status=='publish') { //It's already published so do nothing.
 			return;
-			}
+		}
 
-			if ($new_status <> 'publish') { //Do nothing as this isn't published.
+		if ($new_status <> 'publish') { //Do nothing as this isn't published.
 			return;
-			}
+		}
 
-			$post_var = get_object_vars($post);
-			$post_id = $post_var['post_id'];
+		$post_var = get_object_vars($post);
+		$post_id = $post_var['ID'];
 
-			$friends = get_post_custom_values('EmailTo', $post_id); 
+		$friends = get_post_custom_values('EmailTo', $post_id); 
 
-			$domain = get_option('home');
-			$admin_email = get_option('admin_email');
+		$domain = get_option('home');
+		$admin_email = get_option('admin_email');
 	    
-			$settings = get_option('emailcoauthor_options');
-			$email_to = get_post_custom_values('EmailToName', $post_id);
-			$email_subject = get_post_custom_values('EmailSubject', $post_id);
-			$email_body = get_post_custom_values('EmailBody', $post_id);
+		$settings = get_option('emailcoauthor_options');
+		$email_to = get_post_custom_values('EmailToName', $post_id);
+		$email_subject = get_post_custom_values('EmailSubject', $post_id);
+		$email_body = get_post_custom_values('EmailBody', $post_id);
 
-			if (empty($friends) && empty($settings['emailcoauthor_includeadmin']) && empty($settings['allto'])) {
+		if (empty($friends)) {
+			$friends = array($_POST['EmailTo']);
+		}
+		if (empty($email_to)) {
+			$email_to = array($_POST['EmailToName']);
+		}
+		if (empty($email_subject)) {
+			$email_subject = array($_POST['EmailSubject']);
+		}
+
+		if (empty($email_body)) {
+			$email_body = array($_POST['EmailBody']);
+		}
+
+		if (empty($friends) && empty($settings['emailcoauthor_includeadmin']) && empty($settings['allto'])) {
 			return;
-			}
+		}
 
-			// Set the from name
-			if (!empty($settings['fromname'])) {
+		// Set the from name
+		if (!empty($settings['fromname'])) {
 			$from = $settings['fromname'];
 			$from = "From: $from <$admin_email>";
-			} else {
+		} else {
 			$from = "From: \"Site Admin\" <$admin_email>";
-			}
+		}
 
-			$header[] = $from;
-			if (!empty($settings['sendhtml'])) {
+		$header[] = $from;
+		if (!empty($settings['sendhtml'])) {
 			$header[] = 'content-type: text/html';
-			}
+		}
 
-			// Set the subject
-				  if (!empty($email_subject[0])) {
+		// Set the subject
+		if (!empty($email_subject[0])) {
 			$subject = $email_subject[0];
-			} else {
+		} else {
 			$subject = $settings['emailsubject'];
-			}
+		}
 
-			// Set the message body
-			if (!empty($email_body[0])) {
+		// Set the message body
+		if (!empty($email_body[0])) {
 			$body = $email_body[0];
-			} else {
+		} else {
 			$body = $settings['emailbody'];
-			}
+		}
 
-			// Personalize as needed
-				 if (!empty($email_to[0])) {
+		// Personalize as needed
+		if (!empty($email_to[0])) {
 
 			if (!empty($settings['sendhtml'])) {
-			$body = "$email_to[0],
+				$body = "$email_to[0],
 	<br>
 	$body";
 			} else {
 				$body = "$email_to[0],
 	$body";
 			}
-		   }
+		}
 
-			// Put an add on the email if allowed
-				 if (!empty($settings['emailcoauthor_advertiseplugin'])) {
+		// Put an ad on the email if allowed
+		if (!empty($settings['emailcoauthor_advertiseplugin'])) {
 			if (!empty($settings['sendhtml'])) {
 				$body = "$body<P>";
 			}
 			$body = "$body
 
-	This email was sent via the \"Email CoAuthor On Post\" WordPress Plugin.  You can find out more about this plugin at 
+	This email was sent via the \"Email CoAuthor On Post\" WordPress Plugin.  You can find out more about this plugin at http://dcac.co/go/EmailCoAuthorOnPost.";
+		}
 
-http://dcac.co/go/EmailCoAuthorOnPost.";
-		   }
-
-		 //Swap out variables.
+		//Swap out variables.
 		$subject = str_replace('$domain', get_site_url(), $subject);
 		$subject = str_replace('$post_url', get_permalink(), $subject);
 		$subject = str_replace('$title', get_the_title(), $subject);
@@ -139,26 +148,20 @@ http://dcac.co/go/EmailCoAuthorOnPost.";
 			//if (empty($friends)) {
 			//	wp_mail($admin_email, $subject, $body, $header);
 			//}
-
 			foreach ( $friends as $key => $value ) {
 				if (isset($settings['emailcoauthor_includeadmin'] )) {
 					if (empty($value)) {
-						$value = $admin_email.', test2@mrdenny.com';
+						$value = $admin_email;
 					} else {
 						$value = $value.', '.$admin_email;
 					}
 				}
 				wp_mail($value, $subject, $body, $header);
 			}
- 			} else {
-				wp_mail($admin_email, 'Error with EmailCoAuthorOnPost plugin', 'The plugin EmailCoAuthorOnPost on $domain is not 
-
-configured correctly.  Please check the configuration to resolve this issue.', $header);
-			}
+ 		} else {
+			wp_mail($admin_email, 'Error with EmailCoAuthorOnPost plugin', 'The plugin EmailCoAuthorOnPost on $domain is not configured correctly as there is no default subject and body for emails.  Please check the configuration to resolve this issue.', $header);
 		}
-
-
-
+	}
 
 
 
@@ -212,9 +215,7 @@ configured correctly.  Please check the configuration to resolve this issue.', $
 TEXT_DOMAIN ); ?>" />
 				</p>
 			</form>
-	The "From Name", "Email Subject" and "Email Body" settings are required.  They must be filled out for the plugin to work correctly.  Even if you plan 
-
-on using different values for the subject and body in every blog post, these values must be filled in with default values.
+	The "From Name", "Email Subject" and "Email Body" settings are required.  They must be filled out for the plugin to work correctly.  Even if you plan on using different values for the subject and body in every blog post, these values must be filled in with default values.
 		</div>
 		<?php
 	}
@@ -309,9 +310,7 @@ value='yes'";
 	function donate() {
 		$options = get_option('emailcoauthor_options');
 		if (empty($options['emailcoauthor_donate'])) {
-			echo "<input id='emailcoauthor_donate' name='emailcoauthor_options[emailcoauthor_donate]' type='checkbox' value='yes'/> I 
-
-have <a href=\"http://dcac.co/go/EmailCoAuthorOnPost\">donated</a> to the support of this plugin.";
+			echo "<input id='emailcoauthor_donate' name='emailcoauthor_options[emailcoauthor_donate]' type='checkbox' value='yes'/> I have <a href=\"http://dcac.co/go/EmailCoAuthorOnPost\">donated</a> to the support of this plugin.";
 		} else {
 			echo "<input id='emailcoauthor_donate' name='emailcoauthor_options[emailcoauthor_donate]' type='hidden' value='yes'/>";
 		}
@@ -359,6 +358,7 @@ have <a href=\"http://dcac.co/go/EmailCoAuthorOnPost\">donated</a> to the suppor
 				echo "<input type='text' name='EmailToName' value='";
 				echo $EmailToName[0];
 				echo "'>";
+				echo "<input type='hidden' name='EmailToName_Disabled' value='' />";
 			} else {
 				echo "<input type='text' name='EmailToName' value='Disabled: Edit via Custom Fields' disabled>";
 				echo "<input type='hidden' name='EmailToName_Disabled' value='true' />";
@@ -369,6 +369,7 @@ have <a href=\"http://dcac.co/go/EmailCoAuthorOnPost\">donated</a> to the suppor
 				echo "<input type='text' name='EmailTo' value='";
 				echo $EmailTo[0];
 				echo "'>";
+				echo "<input type='hidden' name='EmailTo_Disabled' value='' />";
 			} else {
 				echo "<input type='text' name='EmailTo' value='Disabled: Edit via Custom Fields' disabled>";
 				echo "<input type='hidden' name='EmailTo_Disabled' value='true' />";
@@ -396,25 +397,35 @@ have <a href=\"http://dcac.co/go/EmailCoAuthorOnPost\">donated</a> to the suppor
 	}
 
 	function meta_box_save($post_id, $post) {
-		if ($_POST['EmailTo_Disabled'] == "") {
+		if (isset($_POST['EmailTo_Disabled'])) {
 			//Save the EmailTo Field
-			if ($_POST['EmailTo']) {
+			if (isset($_POST['EmailTo'])) {
 				update_post_meta($post_id, 'EmailTo', $_POST['EmailTo']);
 			} else {
 				delete_post_meta ($post_id, 'EmailTo');
 			}
 		}
-		if ($_POST['EmailToName_Disabled'] == "") {
+		if (isset($_POST['EmailToName_Disabled'])) {
 			//Save the EmailToName Field
-			if ($_POST['EmailToName']) {
+			if (isset($_POST['EmailToName'])) {
 				update_post_meta($post_id, 'EmailToName', $_POST['EmailToName']);
 			} else {
 				delete_post_meta ($post_id, 'EmailToName');
 			}
 		}
 
-		$post_EmailSubject = $_POST['EmailSubject'];
-		$post_EmailBody = $_POST['EmailBody'];
+		if (isset($_POST['EmailSubject'])) {
+			$post_EmailSubject = $_POST['EmailSubject'];
+		} else {
+			$post_EmailSubject = '';
+		}
+
+		if (isset($_POST['EmailBody'])) {
+			$post_EmailBody = $_POST['EmailBody'];
+		} else {
+			$post_EmailBody = '';
+		}
+
 
 		$options =  get_option('emailcoauthor_options');
 
@@ -450,7 +461,7 @@ have <a href=\"http://dcac.co/go/EmailCoAuthorOnPost\">donated</a> to the suppor
 $emailcoauthor_c = new emailcoauthor_class();
 
 //add_action('publish_post', array($emailcoauthor_c, 'EmailCoAuthor'));
-add_action('transition_post_status', array($emailcoauthor_c, 'EmailCoAuthor'), 10, 3); 
+add_action('transition_post_status', array($emailcoauthor_c, 'EmailCoAuthor'), 19, 3); 
 add_action('admin_menu', array($emailcoauthor_c, 'menu'));
 add_filter('plugin_action_links', array($emailcoauthor_c, 'action_links'),10,2);
 add_action('admin_init', array($emailcoauthor_c, 'admin_init'), 1);
